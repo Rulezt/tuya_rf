@@ -53,17 +53,18 @@ int RF_Init(void)
 }
 
 int StartTx() {
-     if (RF_Init()!=0) {
+    if (RF_Init()!=0) {
         return 1;
-	}
+    }
     CMT2300A_WriteReg(CMT2300A_CUS_SYS2,0); //???? 
-    CMT2300A_ConfigGpio(CMT2300A_GPIO1_SEL_DOUT | CMT2300A_GPIO3_SEL_DIN | CMT2300A_GPIO2_SEL_INT2);
-	CMT2300A_EnableTxDin(true);    
-	CMT2300A_ConfigTxDin(CMT2300A_TX_DIN_SEL_GPIO1);
-	CMT2300A_EnableTxDinInvert(false); 
-	CMT2300A_GoSleep();
-	CMT2300A_GoStby();
-	if (CMT2300A_GoTx()) {
+    // Correzione: Imposta GPIO1 come DIN (input per Tx data), rimuovi GPIO3 (non usato)
+    CMT2300A_ConfigGpio(CMT2300A_GPIO1_SEL_DIN | CMT2300A_GPIO2_SEL_INT2);
+    CMT2300A_EnableTxDin(true);    
+    CMT2300A_ConfigTxDin(CMT2300A_TX_DIN_SEL_GPIO1);
+    CMT2300A_EnableTxDinInvert(false); 
+    CMT2300A_GoSleep();
+    CMT2300A_GoStby();
+    if (CMT2300A_GoTx()) {
         return 0;
     } else {
         return 2;
